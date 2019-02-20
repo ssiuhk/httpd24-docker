@@ -1,0 +1,32 @@
+version: '3'
+services:
+  apache:
+    container_name: httpd24
+    image: ssiu/apache2:2.4.34
+    build:
+       context: ./build
+    restart: always
+    environment:
+      - PHP_UPLOAD_MAX_FILESIZE=64M
+      - PHP_POST_MAX_SIZE=128M
+      - SERVER_NAME=localhost
+      - SERVER_ADMIN=admin@localhost
+      - MAIL_RELAY_HOST=mail
+      - MY_DOMAIN=localhost
+      - TIME_ZONE=ASIA/Hong_Kong
+      - GROUP1=group1:x:1001:user1,user3
+      - GROUP2=group2:x:2001:user2
+      - USER1=user1:x:10001:1001:user1:/home/wwwroot/user1:/bin/bash
+      - USER2=user2:x:20001:2001:user2:/home/wwwroot/user2:/bin/bash
+      - USER3=user3:x:10002:1001:user3:/home/wwwroot/user3:/bin/bash
+    ports:
+      - '0.0.0.0:10080:80'
+      - '0.0.0.0:10443:443'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
